@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: Tenki
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tenki
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+
+app:
+  jwt-secret: daf66e01593f61a15b857cf433aae03a005812b31234e149036bcc8dee755dbb
+  jwt-expiration-milliseconds: 60480000
+
+server:
+  port: 8080
+
+api:
+  host:
+    baseurl: https://api.openweathermap.org/
+    appid: 12d10bef38432936b4fd94ee49e55a86
