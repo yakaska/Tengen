@@ -17,6 +17,9 @@ public class RegisterDto {
     private String email;
 
     @NotBlank
+    private String username;
+
+    @NotBlank
     private String firstName;
 
     @NotBlank

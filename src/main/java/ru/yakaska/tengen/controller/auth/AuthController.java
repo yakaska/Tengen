@@ -29,10 +29,12 @@ public class AuthController {
         return ResponseEntity.ok(jwtAuthResponse);
     }
 
-
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterDto registerDto) {
-        RegisterResponse response = new RegisterResponse(authService.register(registerDto));
+        // TODO: 12.09.2023 think about return entity
+        RegisterResponse response = new RegisterResponse(
+                "User with username: " + authService.register(registerDto).getUsername() + " successfully registered!"
+        );
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

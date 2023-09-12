@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: Tengen
+  datasource:
+    url: jdbc:h2:~/projects/Tengen/tengendb
+    username: user
+    password: pass
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+
+app:
+  jwt-secret: daf66e01593f61a15b857cf433aae03a005812b31234e149036bcc8dee755dbb
+  jwt-expiration-milliseconds: 60480000
+
+server:
+  port: 8080

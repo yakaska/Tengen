@@ -1,8 +1,8 @@
 spring:
   application:
-    name: Tenki
+    name: Tengen
   datasource:
-    url: jdbc:postgresql://localhost:5432/tenki
+    url: jdbc:postgresql://localhost:4000/tengen
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
@@ -17,6 +17,10 @@ app:
 
 server:
   port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-exception: false
 
 api:
   host:

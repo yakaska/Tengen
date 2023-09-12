@@ -30,23 +30,25 @@ class AuthServiceImpl implements AuthService {
                 loginDto.getEmail(),
                 loginDto.getPassword())
         );
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         return jwtTokenProvider.generateToken(authentication);
     }
 
     @Override
-    public String register(RegisterDto registerDto) {
-        if (userRepository.existsByEmail(registerDto.getEmail())) {
-            throw new UserAlreadyExistsException("User already exists.");
+    public User register(RegisterDto registerDto) {
+
+        if (userRepository.existsByUsername(registerDto.getUsername())) {
+            throw new UserAlreadyExistsException(registerDto.getUsername());
         }
 
+        // TODO: 12.09.2023 replace with MapStruct or field mapper
         User user = User.builder()
-                .username(registerDto.getEmail())
+                .email(registerDto.getEmail())
+                .username(registerDto.getUsername())
+                .firstName(registerDto.getFirstName())
+                .lastName(registerDto.getLastName())
                 .password(passwordEncoder.encode(registerDto.getPassword()))
                 .build();
-        userRepository.save(user);
-        return "User registered successfully.";
+        return userRepository.save(user);
     }
 }
