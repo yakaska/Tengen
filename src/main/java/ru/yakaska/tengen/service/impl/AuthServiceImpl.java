@@ -36,11 +36,9 @@ class AuthServiceImpl implements AuthService {
 
     @Override
     public User register(RegisterDto registerDto) {
-
         if (userRepository.existsByUsername(registerDto.getUsername())) {
             throw new UserAlreadyExistsException(registerDto.getUsername());
         }
-
         // TODO: 12.09.2023 replace with MapStruct or field mapper
         User user = User.builder()
                 .email(registerDto.getEmail())

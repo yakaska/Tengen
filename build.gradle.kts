@@ -21,9 +21,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
-
 	implementation("org.springframework.data:spring-data-rest-webmvc:4.1.2")
 
+	implementation("io.minio:minio:8.5.5")
 
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")

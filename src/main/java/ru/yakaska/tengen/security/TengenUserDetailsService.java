@@ -25,7 +25,7 @@ public class TengenUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(username).get();
         Set<GrantedAuthority> authorities = Collections.emptySet();
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
+                user.getUsername(),
                 user.getPassword(),
                 authorities
         );
