@@ -1,9 +1,6 @@
 package ru.yakaska.tengen.service.impl;
 
-import io.minio.ListObjectsArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
-import io.minio.Result;
+import io.minio.*;
 import io.minio.messages.Item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,8 +16,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-// format: user-{id}/
 
 @Service
 @RequiredArgsConstructor
@@ -65,17 +60,45 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public boolean createFolder(String folderName) {
-        return false;
+    public boolean createDirectory(String name) {
+        if (directoryExists(name))
+            return false;
+
+        // This path allows to create an empty folder in minio
+        String objectName = name + "/";
+
+        try {
+            minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(bucket)
+                            .object(objectName)
+                            .stream(new ByteArrayInputStream(new byte[]{}), 0, -1)
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new FileUploadException("Failed to create directory with name:" + name);
+        }
+        return true;
     }
 
     @Override
-    public boolean folderExist(String folderName) {
-        return false;
+    public boolean directoryExists(String name) {
+        return listDirectory(name).iterator().hasNext();
     }
 
     @Override
-    public void deleteFolder(String[] folderName) {
+    public void deleteFolder(String directoryPath) {
+        Iterable<Result<Item>> items = minioClient.listObjects(
+                ListObjectsArgs.builder()
+                        .bucket(bucket)
+                        .prefix(directoryPath)
+                        .recursive(true)
+                        .build()
+        );
+        minioClient.removeObjects(RemoveObjectsArgs.builder()
+                .objects()
+                .build()
+        );
     }
 
     @Override

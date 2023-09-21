@@ -12,11 +12,11 @@ public interface StorageService {
 
     Map<String, MinioObject> search(String userDirectory, String query);
 
-    boolean createFolder(String folderName);
+    boolean createDirectory(String folderName);
 
-    boolean folderExist(String folderName);
+    boolean directoryExists(String folderName);
 
-    void deleteFolder(String[] folderName);
+    void deleteFolder(String folderName);
 
     boolean uploadFiles(String userDirectory, MultipartFile[] file);
 

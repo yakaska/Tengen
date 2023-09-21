@@ -2,6 +2,7 @@ package ru.yakaska.tengen.minio;
 
 import io.minio.Result;
 import io.minio.errors.*;
+import io.minio.messages.DeleteObject;
 import io.minio.messages.Item;
 
 import java.io.IOException;
@@ -46,5 +47,7 @@ public class MinioMapper {
 
     }
 
+    public static List<DeleteObject> toDeleteObject() {
 
+    }
 }
