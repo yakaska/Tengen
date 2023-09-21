@@ -8,9 +8,9 @@ import java.util.Map;
 
 public interface StorageService {
 
-    List<MinioObject> listFolder(String userFolder);
+    List<MinioObject> listDirectory(String userFolder);
 
-    Map<String, MinioObject> search(String userDirectory, String userFolder);
+    Map<String, MinioObject> search(String userDirectory, String query);
 
     boolean createFolder(String folderName);
 
@@ -18,7 +18,7 @@ public interface StorageService {
 
     void deleteFolder(String[] folderName);
 
-    boolean uploadFile(String userDirectory, MultipartFile[] file);
+    boolean uploadFiles(String userDirectory, MultipartFile[] file);
 
     void renameFile(String filePath, String fileNewName);
 
