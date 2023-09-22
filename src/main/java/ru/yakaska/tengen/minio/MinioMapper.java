@@ -4,15 +4,18 @@ import io.minio.Result;
 import io.minio.errors.*;
 import io.minio.messages.DeleteObject;
 import io.minio.messages.Item;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+@Log4j2
 public class MinioMapper {
 
     public static List<MinioObject> toMinioObject(Iterable<Result<Item>> items) {
@@ -47,7 +50,19 @@ public class MinioMapper {
 
     }
 
-    public static List<DeleteObject> toDeleteObject() {
-
+    public static List<DeleteObject> toDeleteObject(Iterable<Result<Item>> items) {
+        return StreamSupport.stream(items.spliterator(), false)
+                .map(result -> {
+                    try {
+                        return new DeleteObject(result.get().objectName());
+                    } catch (NoSuchElementException e) {
+                        log.warn("Empty result for path: "); //TODO: replace with log
+                    } catch (Exception e) {
+                        System.out.println("error creating delete object");
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 }

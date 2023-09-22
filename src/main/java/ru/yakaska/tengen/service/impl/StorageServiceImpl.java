@@ -1,8 +1,12 @@
 package ru.yakaska.tengen.service.impl;
 
 import io.minio.*;
+import io.minio.errors.*;
+import io.minio.messages.DeleteError;
+import io.minio.messages.DeleteObject;
 import io.minio.messages.Item;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,13 +16,17 @@ import ru.yakaska.tengen.minio.MinioObject;
 import ru.yakaska.tengen.service.StorageService;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class StorageServiceImpl implements StorageService {
 
     @Value("${app.minio.bucket}")
@@ -87,18 +95,30 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public void deleteFolder(String directoryPath) {
-        Iterable<Result<Item>> items = minioClient.listObjects(
-                ListObjectsArgs.builder()
+    public void deleteFolder(String directory) {
+        List<DeleteObject> deleteObjects = MinioMapper.toDeleteObject(minioClient.listObjects(ListObjectsArgs.builder()
+                .bucket(bucket)
+                .prefix(directory)
+                .recursive(true)
+                .build()
+        ));
+
+        Iterable<Result<DeleteError>> deleteErrors = minioClient.removeObjects(
+                RemoveObjectsArgs.builder()
                         .bucket(bucket)
-                        .prefix(directoryPath)
-                        .recursive(true)
+                        .objects(deleteObjects)
                         .build()
         );
-        minioClient.removeObjects(RemoveObjectsArgs.builder()
-                .objects()
-                .build()
-        );
+
+        deleteErrors.forEach(result -> {
+            DeleteError error;
+            try {
+                error = result.get();
+            } catch (Exception e) {
+                throw new RuntimeException(e); // TODO: replace with custom exception
+            }
+            log.warn("Error deleting file: " + error.objectName() + "; " + error.message());
+        });
     }
 
     @Override
@@ -120,8 +140,8 @@ public class StorageServiceImpl implements StorageService {
                 );
             }
             return true;
-        } catch (Exception e) { // TODO: replace with custom exception
-            throw new FileUploadException("Failed upload file");
+        } catch (Exception e) {
+            throw new FileUploadException("Failed to upload a file");
         }
     }
 

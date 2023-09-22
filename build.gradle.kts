@@ -36,6 +36,9 @@ dependencies {
 	runtimeOnly("org.postgresql:postgresql")
 	runtimeOnly("com.h2database:h2")
 
+	implementation("org.apache.logging.log4j:log4j-api:2.20.0")
+	implementation("org.apache.logging.log4j:log4j-core:2.20.0")
+
 	annotationProcessor("org.projectlombok:lombok")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
